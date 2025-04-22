@@ -34,7 +34,6 @@ export class UserPlacesComponent implements OnInit, OnDestroy {
               return new Error('Could not fetch user places. Please try again later.');
             }
           );
-
         })
       ).subscribe({
         next: (places) => {
@@ -50,11 +49,11 @@ export class UserPlacesComponent implements OnInit, OnDestroy {
       })
 
     );
-
-
   }
   ngOnDestroy() {
-    throw new Error('Method not implemented.');
+    this.subscriptions.forEach((subscribtion) => {
+      subscribtion.unsubscribe();
+    })
   }
 
 

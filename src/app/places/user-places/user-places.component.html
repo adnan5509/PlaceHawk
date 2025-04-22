@@ -8,6 +8,6 @@
   @if (userPlaces()) {
   <app-places [places]="userPlaces()!" />
   } @else if (userPlaces()?.length === 0) {
-  <p class="fallback-text">Unfortunately, no places could be found.</p>
+  <p class="fallback-text">Unfortunately, no User place could be found.</p>
   }
 </app-places-container>
