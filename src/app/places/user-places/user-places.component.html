@@ -1,6 +1,6 @@
 <app-places-container title="Your Favorite Places">
   @if(isFetching() && !error()) {
-  <p class="fallback-text">Fetching User Places...</p>
+  <p class="fallback-text">Fetching yout favourite Places...</p>
   }
   @if(error()) {
   <p class="fallback-text">{{error()}}</p>
@@ -8,6 +8,6 @@
   @if (userPlaces()) {
   <app-places [places]="userPlaces()!" (selectPlace)="onDeleteUserPlace($event)" />
   } @else if (userPlaces()?.length === 0) {
-  <p class="fallback-text">Unfortunately, no User place could be found.</p>
+  <p class="fallback-text">Unfortunately, your favourite places could be found.</p>
   }
 </app-places-container>

@@ -33,7 +33,7 @@ export class UserPlacesComponent implements OnInit, OnDestroy {
           console.log(error);
           return throwError(
             () => {
-              return new Error('Could not fetch user places. Please try again later.');
+              return new Error('Could not fetch your favourite places. Please try again later.');
             }
           );
         })
