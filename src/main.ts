@@ -8,11 +8,7 @@ function loggingInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) 
     console.log("[Outgoing request]");
     console.log(request)
 
-    const req = request.clone({
-        headers: request.headers.set('X_DEBUG', 'TESTING')
-    });
-
-    return next(req);
+    return next(request);
 }
 
 
