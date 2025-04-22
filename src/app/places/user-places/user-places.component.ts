@@ -5,6 +5,7 @@ import { PlacesComponent } from '../places.component';
 import { catchError, map, Subscription, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Place } from '../place.model';
+import { PlacesService } from '../places.service';
 
 @Component({
   selector: 'app-user-places',
@@ -20,35 +21,23 @@ export class UserPlacesComponent implements OnInit, OnDestroy {
   error = signal('');
   userPlaces = signal<Place[] | undefined>(undefined);
 
-  constructor(private httpClient: HttpClient) {
-
+  constructor(private httpClient: HttpClient, private placesService: PlacesService) {
   }
 
   ngOnInit() {
     this.isFetching.set(true);
-    this.subscriptions.push(
-      this.httpClient.get<{ places: Place[] }>('http://localhost:3000/user-places').pipe(
-        map((response) => response.places),
-        catchError((error) => {
-          console.log(error);
-          return throwError(
-            () => {
-              return new Error('Could not fetch your favourite places. Please try again later.');
-            }
-          );
-        })
-      ).subscribe({
-        next: (places) => {
-          this.userPlaces.set(places);
-        },
-        complete: () => {
-          this.isFetching.set(false);
-        },
-        error: (error: Error) => {
-          this.error.set(error.message);
-        }
+    this.subscriptions.push(this.placesService.loadUserPlaces().subscribe({
+      next: (places) => {
+        this.userPlaces.set(places);
+      },
+      complete: () => {
+        this.isFetching.set(false);
+      },
+      error: (error: Error) => {
+        this.error.set(error.message);
+      }
 
-      })
+    })
 
     );
   }
