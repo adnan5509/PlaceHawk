@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 
 import { Place } from './place.model';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, Subscribable, Subscription, throwError } from 'rxjs';
+import { catchError, map, Subscribable, Subscription, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,17 +19,31 @@ export class PlacesService {
   }
 
   loadUserPlaces() {
-    return this.fetchPlaces('http://localhost:3000/user-places', 'Could not fetch your favourite places. Please try again later.');
+    return this.fetchPlaces('http://localhost:3000/user-places', 'Could not fetch your favourite places. Please try again later.')
+      .pipe(
+        tap((userPlaces) => {
+          this.userPlaces.set(userPlaces);
+        })
+      );
   }
 
   addPlaceToUserPlaces(place: Place) {
-    return this.httpClient.put('http://localhost:3000/user-places', { placeId: place.id });
+    return this.httpClient.put('http://localhost:3000/user-places', { placeId: place.id })
+      .pipe(
+        tap(() => {
+          this.userPlaces.set([...this.userPlaces(), place]);
+        })
+      );
   }
 
   removeUserPlace(place: Place) {
-    return this.httpClient.delete(`http://localhost:3000/user-places/${place.id}`);
+    return this.httpClient.delete(`http://localhost:3000/user-places/${place.id}`)
+      .pipe(
+        tap(() => {
+          this.userPlaces.set(this.userPlaces().filter((userPlace) => userPlace.id !== place.id));
+        })
+      );
   }
-
 
   private fetchPlaces(url: string, errorMessage: string) {
     return this.httpClient.get<{ places: Place[] }>(url)
