@@ -22,9 +22,13 @@ export class PlacesService {
     return this.fetchPlaces('http://localhost:3000/user-places', 'Could not fetch your favourite places. Please try again later.');
   }
 
-  addPlaceToUserPlaces(place: Place) { }
+  addPlaceToUserPlaces(place: Place) {
+    return this.httpClient.put('http://localhost:3000/user-places', { placeId: place.id });
+  }
 
-  removeUserPlace(place: Place) { }
+  removeUserPlace(place: Place) {
+    return this.httpClient.delete(`http://localhost:3000/user-places/${place.id}`);
+  }
 
 
   private fetchPlaces(url: string, errorMessage: string) {

@@ -49,7 +49,7 @@ export class UserPlacesComponent implements OnInit, OnDestroy {
 
   onDeleteUserPlace(selectedUserPlace: Place) {
     this.subscriptions.push(
-      this.httpClient.delete(`http://localhost:3000/user-places/${selectedUserPlace.id}`).subscribe({
+      this.placesService.removeUserPlace(selectedUserPlace).subscribe({
         next: (response) => {
           console.log(response);
         },
