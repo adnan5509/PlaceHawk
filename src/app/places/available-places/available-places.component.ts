@@ -14,6 +14,7 @@ import { catchError, map, Subscription, throwError } from 'rxjs';
   imports: [PlacesComponent, PlacesContainerComponent],
 })
 export class AvailablePlacesComponent implements OnInit, OnDestroy {
+
   places = signal<Place[] | undefined>(undefined);
   subscriptions: Subscription[] = [];
   isFetching = signal(false);
@@ -52,6 +53,13 @@ export class AvailablePlacesComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((subscription) => {
       subscription.unsubscribe();
     });
+  }
+
+  onSelectPlace(selectedPlace: Place) {
+    this.httpClient.put('http://localhost:3000/user-places', { placeId: selectedPlace.id }).subscribe({
+      next: (response) => { console.log(response) },
+      complete: () => { console.log("Completed"); },
+    })
   }
 
 
