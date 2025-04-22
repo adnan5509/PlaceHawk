@@ -51,10 +51,15 @@ export class PlacesService {
   }
 
   removeUserPlace(place: Place) {
+    const existingUserPlaces = this.userPlaces();
     return this.httpClient.delete(`http://localhost:3000/user-places/${place.id}`)
       .pipe(
-        tap(() => {
-          this.userPlaces.set(this.userPlaces().filter((userPlace) => userPlace.id !== place.id));
+        catchError(() => {
+          this.userPlaces.set(existingUserPlaces);
+          this.errorService.showError('Could not remove this from favourite places. Please try again later.');
+          return throwError(() => {
+            return new Error('Could not remove this from favourite places. Please try again later.');
+          })
         })
       );
   }
