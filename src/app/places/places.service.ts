@@ -28,10 +28,20 @@ export class PlacesService {
   }
 
   addPlaceToUserPlaces(place: Place) {
+
+    const existingUserPlaces = this.userPlaces();
+    const isPlaceAlreadyAdded = existingUserPlaces.some((userPlace) => userPlace.id === place.id);
+    if (!isPlaceAlreadyAdded) {
+      this.userPlaces.set([...this.userPlaces(), place]);
+    }
+
     return this.httpClient.put('http://localhost:3000/user-places', { placeId: place.id })
       .pipe(
-        tap(() => {
-          this.userPlaces.set([...this.userPlaces(), place]);
+        catchError(() => {
+          this.userPlaces.set(existingUserPlaces);
+          return throwError(() => {
+            return new Error('Could not add place to your favourite places. Please try again later.');
+          })
         })
       );
   }
