@@ -56,10 +56,11 @@ export class AvailablePlacesComponent implements OnInit, OnDestroy {
   }
 
   onSelectPlace(selectedPlace: Place) {
-    this.httpClient.put('http://localhost:3000/user-places', { placeId: selectedPlace.id }).subscribe({
+    this.subscriptions.push(this.httpClient.put('http://localhost:3000/user-places', { placeId: selectedPlace.id }).subscribe({
       next: (response) => { console.log(response) },
       complete: () => { console.log("Completed"); },
     })
+    );
   }
 
 

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit, signal } from '@angular/core';
 
 import { PlacesContainerComponent } from '../places-container/places-container.component';
 import { PlacesComponent } from '../places.component';
@@ -20,7 +20,9 @@ export class UserPlacesComponent implements OnInit, OnDestroy {
   error = signal('');
   userPlaces = signal<Place[] | undefined>(undefined);
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {
+
+  }
 
   ngOnInit() {
     this.isFetching.set(true);
@@ -54,6 +56,20 @@ export class UserPlacesComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((subscribtion) => {
       subscribtion.unsubscribe();
     })
+  }
+
+  onDeleteUserPlace(selectedUserPlace: Place) {
+    this.subscriptions.push(
+      this.httpClient.delete(`http://localhost:3000/user-places/${selectedUserPlace.id}`).subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        complete: () => {
+          this.userPlaces.set(this.userPlaces()?.filter((userPlace) => userPlace.id !== selectedUserPlace.id));
+          console.log("Completed");
+        }
+      })
+    );
   }
 
 
