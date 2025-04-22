@@ -34,6 +34,8 @@ export class PlacesService {
     const isPlaceAlreadyAdded = existingUserPlaces.some((userPlace) => userPlace.id === place.id);
     if (!isPlaceAlreadyAdded) {
       this.userPlaces.set([...this.userPlaces(), place]);
+    } else {
+      this.errorService.showError('Place already marked as favourite.');
     }
 
     return this.httpClient.put('http://localhost:3000/user-places', { placeId: place.id })
